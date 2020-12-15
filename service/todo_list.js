@@ -2,36 +2,31 @@ var db = require('../database/dbcon');
 
 var conn = db.db_con;
 
-class db_connection {
-    create_data(todo,timer,color,create_date){
-        conn.query(`insert into todo_list(id,todo,todo_color,todo_time,todo_create_date) values(0,${todo},${color},${timer},${create_date})`
-        ,function(err,result){
-            if(err) throw err;
-            console.log("createQuery : "+result);
-        });
-    }
+class DataBase{
+    create_setData(todo,todo_color,todo_time){
+        this.todo = todo;
+        this.todo_color = todo_color;
+        this.todo_time = todo_time;
+    };
 
-    read_data(){
-        var result = {};
-        conn.query("select * from todo_list", function(err,rows,fields){
-            if(err) throw err;
-            result = rows;
-            // console.log(`result : ${result}`);
+    read_promise = new Promise((resolve,reject)=>{
+        var result = [];
+        var sql = "select * from todo_list";
+        conn.query(sql,(err,rows)=>{
+            if(err)reject(err);
+            for(var i=0; i< rows.length ; i++){
+                result.push(rows[i])
+            }
+            resolve(result);
         });
-        for(var i=0; i< result.langth; i++){
-            console.log(`Result11 : ${result}`);
+    });
+    async read_data(){
+        try {
+            return this.read_promise;
+        } catch (err) {
+            return err;
         }
-    }
-
-    update_data(){
-
-    }
-
-    delete_data(){
-
-    }
+    };
 }
 
-module.exports = {
-    db_conn:new db_connection()
-}
+module.exports.DB =new DataBase();
