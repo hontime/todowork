@@ -2,7 +2,7 @@ var db = require('../database/dbcon');
 
 var conn = db.db_con;
 
-class DataBase{
+class Todo_list{
     create_setData(todo,todo_color,todo_time){
         this.todo = todo;
         this.todo_color = todo_color;
@@ -29,4 +29,4 @@ class DataBase{
     };
 }
 
-module.exports.DB =new DataBase();
+module.exports.todoList =new Todo_list();
