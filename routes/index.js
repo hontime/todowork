@@ -10,15 +10,4 @@ router.get('/', function(req, res, next) {
   });
 });
 
-router.get('/signup',(req,res)=>{
-  res.render('signup');
-});
-
-router.post('/signup',(req,res)=>{
-  var userId = req.body.user_id;
-
-  console.log(`User_ID : ${userId}`);
-});
-
-
 module.exports = router;
