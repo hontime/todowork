@@ -35,49 +35,47 @@ class UserService{
         var result =[];
         return new Promise(function(resolve, reject){
             conn.query(sql,function(err,rows){
-                if(err) reject(err);
-                for(var i=0; i< rows.length; i++){
-                    result.push(rows[i]);
+                if(err){
+                    console.log("err 발생 : "+err);
+                    reject(err);
                 }
-                resolve(result);
+                else{
+                    for(var i=0; i< rows.length; i++){
+                        result.push(rows[i]);
+                    }
+                    resolve(result);
+                }
             });
         });
     }
-
-    createUser(){
+    async createUser(id,pwd){
         try {
-            var data = this.get_user(this.user_id).then((value)=>{
-                // 회원가입시 아이디가 데이터베이스 와 비교후 있으면 0을 리턴
-                if(this.user_id === value[0]){
-                   return false;
-                }
-                else if(this.user_id !== value[0]){
-                    hash.update(this.passwd);
-                    var promise = (user_id,user_pwd,date_now)=> {return new Promise((resolve,reject)=>{
-                        var ret_array = [];
-                        var sql = `insert into users values(0,'${user_id}',"${user_pwd}",'${date_now}')`;
-                        conn.query(sql,(err,rows)=>{
-                            if(err) reject(err);
-                            for(var i=0; i<rows.length; i++){
-                                ret_array.push(rows[i]);
-                            }
-                            resolve();
-                        });
-                    })};
-                    promise(this.user_id,hash.digest('hex'),date).then(console.log);
-                    return true
-                }
-            });
-            return data;
-        } catch (err) {
-            return err
+            var get_sql = `select user_id from users where user_id = '${id}'`;
+            var getUser = await this.db_getData(get_sql).then(value=>{return value});
+            // console.log("getUser : "+getUser[0])
+            // console.log("111111111")
+            if(getUser[0] !== undefined){
+                // console.log("222222222")
+                console.log('아이디가 있습니다. 다시시도해주세요');
+                return false;
+            }
+            else{
+                // console.log("333333333")
+                hash.update(pwd);
+                var create_sql = `insert into users values(0, '${id}','${hash.digest("hex")}','${date}')`;
+                var result = await this.db_getData(create_sql).then(value =>{return value});
+                console.log("result : " +result);
+                return true;
+            }
+        } catch (error) {
+            console.log("error : "+error);
         }
     }
 
     async loginUser(id,pwd){
         var sql = `SELECT * FROM users WHERE user_id='${id}'`;
         let result = await this.db_getData(sql).then();
-        console.log("user ID : " +result[0].user_id);
+        console.log("user ID : " +result[0].user_id + " && user PWD : "+result[0].user_password);
     }
 }
 
