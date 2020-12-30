@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>편집 페이지</title>
+</head>
+<body>
+    <form action="/todo/update" method="POST">
+        <Label>num</Label>
+        <input type="number" readonly name="id" value="<%= data.id %>">
+        <Label>ToDo</Label>
+        <input type="text" name="todo" value="<%= data.todo %>">
+        <Label>Color</Label>
+        <input type="text" name="color" value="<%= data.color %>">
+        <input type="submit" value="저장">
+        <button onclick="history.back();">취소</button>
+    </form>
+</body>
+</html>

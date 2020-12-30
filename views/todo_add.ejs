@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo Create</title>
+</head>
+<body>
+    <form action="/todo/create_process" method="POST">
+        <label>ToDo</label>
+        <input type="text" name="todo">
+        <label>Color</label>
+        <input type="text" name="color">
+        <input type="submit" value="저장">
+        <button onclick="history.back();">취소</button>
+    </form>
+</body>
+</html>

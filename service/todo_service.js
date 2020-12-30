@@ -14,7 +14,6 @@ class TodoService{
 
     db_getData(query){
         var result = [];
-        console.log(query);
         return new Promise(function(resolve,reject){
             conn.query(query,(err,rows)=>{
                 if(err) reject(err);
@@ -25,16 +24,30 @@ class TodoService{
             });
         });
     }
-
-    async search_todoList(user_id,todo_id){
+    async Todo_all_list(){
         try {
-            var search_todo = `select * from todo_list where userid=${user_id} && id = ${todo_id} `;
-            var search_data = await this.db_getData(search_todo).then();
+            var sql = `select * from todo_list`;
+            var search_data = await this.db_getData(sql).then();
             if(search_data[0] == null){
                 return false;
             }
             else{
-                return true;
+                return search_data;
+            }
+        } catch (error) {
+            console.log("error : "+error);
+        }
+    }
+
+    async Today_list_todo(user_id){
+        try {
+            var sql = `select * from todo_list where userid=${user_id}`;
+            var search_data = await this.db_getData(sql).then();
+            if(search_data[0] == null){
+                return false;
+            }
+            else{
+                return search_data;
             }
         } catch (error) {
             console.log("error : "+error);
@@ -43,41 +56,56 @@ class TodoService{
 
     async Today_create_todo(todo,color,user_id){
         try {
-            var sql = `insert into todo_list values(0,'${todo}','${color}','${date}','00:00:00',${user_id})`;
-            var data= await this.db_getData(sql).then()
+            var sql = `insert into todo_list values(0,'${todo}','${color}','${date}','00:00:00','${user_id}')`;
+            var data = await this.db_getData(sql).then()
             return data;
         } catch (error) {
             console.log("error : "+error);
         }
     }
 
-    async Today_update_todo(todo,color,user_id,todo_id){
+    async Today_modify_todo(id){
         try {
-            var searchData = await this.search_todoList(user_id,todo_id).then()
-            if(searchData){
-                var sql = `UPDATE todo_list SET todo='${todo}', color='${color}' WHERE userid=${user_id} && id=${todo_id}`;
-                await this.db_getData(sql).then();
-                return "업데이트 성공했습니다.";
+            var sql = `select * from todo_list where id=${id}`;
+            var getdata =await this.db_getData(sql).then();
+            if(getdata !== null){
+                console.log("getData : "+getdata);
+                return getdata[0];
             }
             else{
-                return "업데이트를 실패했습니다.";
+                return false;
             }
         } catch (error) {
             console.log("error : "+error);
         }
     }
 
-    async Today_delete_todo(user_id,todo_id){
+    async Today_update_todo(id,todo,color){
         try {
-            var searchData = await this.search_todoList(user_id,todo_id).then()
-            console.log("search Data: " +searchData);
-            if(searchData){
-                var sql = `DELETE from todo_list where userid=${user_id} && id=${todo_id}`;
-                await this.db_getData(sql).then();
-                return "삭제 성공했습니다.";
+            var sql = `update todo_list set todo = '${todo}', color = '${color}' where id = ${id}`;
+            var getdata =await this.db_getData(sql).then();
+            if(getdata !== null){
+                return true;
             }
             else{
-                return "삭제 실패했습니다.";
+                return false;
+            }
+        } catch (error) {
+            console.log("error : "+error);
+        }
+    }
+
+    async Today_delete_todo(todo_id){
+        try {
+            var sql = `select * from todo_list where id=${todo_id}`;
+            var getdata = await this.db_getData(sql).then();
+            if(getdata !== null){
+                var sql = `DELETE from todo_list where id=${todo_id}`;
+                await this.db_getData(sql).then();
+                return true;
+            }
+            else{
+                return false;
             }
         } catch (error) {
             console.log("error : "+error);
